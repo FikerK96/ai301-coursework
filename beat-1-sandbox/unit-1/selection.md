@@ -163,27 +163,75 @@ Quote source text directly in each field below. Paraphrase does not satisfy them
 
 **Run history**
 
-[The agreement score of each run you did, in order. A single run is a complete answer if
-only one run occurred. **The last score in your list must match the agreement line in the
-`eval-run.txt` you committed** — that file is the record of your final run.]
+RUN 1 (partial run on issue 1-3)
+Date: Sep 20
+Rubric change (what and why): first draft, 9 required checks + 1 preferred
+Score: 2/3
+Disagreements (issue ids): issue-01 (gold accept, mine reject)
+Notes on each disagreement: Maintainer responds, Bounded scope
+Change for run 2: 14-day exclusion + 45-day response window; narrowed the umbrella definition
+
+RUN 2 (partial run on issue 1-3)
+Date: Sept 20
+Rubric change (what and why): Maintainer responds now ignores issues under 14 days old and allows 45 days; Bounded scope narrowed to explicit umbrella/split language
+Score: 3/3
+Disagreements: none
+Notes: tuned on issue-01, so not proof the rubric generalizes
+
+RUN 3 (full run)
+Date: Sept 20 
+Rubric change: none since run 2 
+Score: 18/20 (PASS) 
+Disagreements: issue 14 (gold accept, mine reject. Failed Maintainer responds), issue 20 (gold reject, mine accept, no check failed)
+
+RUN 4 (partial: only issue 14,issue 01) 
+Date: Sept 20 
+Rubric change: Maintainer responds now passes when no sampled issue is 14+ days old (nothing to judge). 45-day rule still applies when one is 
+Cause: issue-14's sample was a single 1-day-old issue, so the check had no evidence and unclear counted as fail 
+Score: 2/2 
+Disagreements: none
+
+RUN 5 (partial: only issue 20,issue 14,issue 01)
+Date: Sept 20
+Rubric change: added Legitimate request check 
+Cause: issue-20 (gold reject) passed every check
+Score: 3/3
+Disagreements: none
+
+LIVE RUNS 
+Date: Sept 21
+Batch 1: #63, #64, #73: all accept, ranked #63 > #64 > #73 
+Batch 2: #12, #18, #47: all accept, ranked #12 > #18 > #47 
+Chosen: 12
+Reason: pure test writing in python is something I was looking forward to going over, and it was one of the issues ranked first between the 2 batches fitting my profile
 
 **Issue analysis**
 
-[One scored issue, identified by id (`issue-01` through `issue-20`; the `calib-`
-issues are not scored). State your rubric's decision, the gold label, and the
-reasoning that produced your rubric's result.]
+issue-20 
+
+Gold label: reject.
+
+My rubric's decision: in run 3 it graded accept, with no failed check: "issue-20  reject  accept   NO     graded accept". After I fixed it, the final full run graded reject: "issue-20  reject  reject   yes".
+
+Why my rubric first accepted it: the repo was healthy (a push and commits the day before capture, and a sampled issue answered in "0.1 days"), the request was one bounded feature, nothing was assigned or claimed, and the bundle has "(no comments)". Every check I had passed. None of them asked whether the issue itself was legitimate. The bundle shows it was "opened by cursor[bot] (NONE) on 2026-08-02, state open, labels: none", with no comments, and its own text says "Logo asset TBD." Nobody with standing in the repo had looked at it, so a newcomer would be claiming a ticket no maintainer had asked for.
+
+What I changed: I added the Legitimate request check, which fails an issue opened by a bot account with no Owner, Member or Collaborator reply, and an issue with no labels, no comments and association NONE. Run 5 (--only issue-20,issue-14,issue-01) then gave "agreement: 3/3 scored items", so issue-20 flipped to reject while issue-14 and issue-01 stayed accept.
 
 **Check rationale**
 
-[One check from the `rubric.md` uploaded to `tools/issue-select/`, quoted as it is
-currently written, with the reasoning behind its current form.]
+The check I picked is Legitimate request. This is how it's written in the rubric.md I uploaded:
+
+| Legitimate request | Issue author, author association, and labels in the Issue header, plus the Comments section | Fails if the author is a bot account (name ending in [bot]) and no Owner, Member or Collaborator has commented in the thread. Also fails if the issue has no labels, no comments, and the author association is NONE, meaning nobody with standing has looked at it. Otherwise passes | required |
+
+I wrote this one after issue-20 got through my rubric even though gold said reject. Every other check passed on it, because the repo was healthy and the request was small, so I needed something that looked at the issue itself. I pointed the evidence at the author, the author association, the labels and the comments because those are always in the bundle, so anyone grading it would find the same things.
+
+I split the pass condition in two. The bot part is there because a bot-opened issue that no maintainer has answered has no real person behind it. The second part needs all three signals at once (no labels, no comments and association NONE), because plenty of good issues have no comments, and issue-01 is one of them. I only wanted to fail an issue when nobody with standing had touched it at all. I made it required because I wouldn't want a newcomer spending a first PR on a ticket the maintainers never asked for.
 
 **Trade-offs**
 
-[What the quoted check gives up. Any one of these is a complete answer: an issue whose
-result it changes, a canary you re-ran with `--only`, a case you accept it will miss, or a
-stated reason nothing changed elsewhere. "Nothing changed, and here is how I know" earns
-the point in full when the reason follows.]
+The main thing this check gives up is brand-new issues from outside contributors. If someone opens a real bug report an hour ago, it has no labels and no reply yet, so it looks the same as an abandoned or auto-generated ticket and my rubric would reject it. I'm okay with that miss, since a first issue that no maintainer has looked at is a risky one to claim anyway.
+
+To check that adding it didn't break anything, I re-ran "--only issue-20,issue-14,issue-01" and got "agreement: 3/3 scored items". issue-20 flipped to reject, and issue-14 and issue-01 stayed accept, since both were opened by human contributors and have labels. Then the final full run gave "agreement: 20/20 scored items  (bar: 18/20: PASS)", so it didn't wrongly reject any of the accept-gold issues. In live mode, #12, #18 and #47 also passed it, since each was opened by a COLLABORATOR and has labels.
 
 ---
 
@@ -198,9 +246,17 @@ This is also the basis for the claim comment you write in Unit 2.
 [Answer all three:
 
 1. The issue's fit to your interests and to the time available.
+
+I picked #12 -> Add snapshot tests for prompt templates
+
 2. What the verdict identified correctly, and what you weighed that the rubric could
    not.
+   
+it has passed every required check. The repo is active, nobody is assigned, there are no comments or linked PRs, and a collaborator opened it with the good first issue label.
+
 3. The anticipated difficulty in claiming it.]
+
+It's the longest of the three, and I may need to learn how snapshot tests work.
 
 ---
 
