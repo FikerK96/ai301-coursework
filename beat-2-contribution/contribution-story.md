@@ -126,31 +126,55 @@ Claim comment: https://github.com/Bashamega/WebDevTools/issues/388#issuecomment-
 
 **Environment Setup**
 
-[What a stranger would need to stand this up: your operating system,
-the relevant versions (language, runtime, package manager, the project
-itself), and how you set the project up. Then the challenges you faced
-and how you solved them, or that none came up.]
+Environment: macOS 26.5, Node v22.16.0, npm 10.9.2. WebDevTools main at commit ce28cbee88465844869da4603d69e55063bd22aa (Nov 5, 2026). Setup: gh repo fork Bashamega/WebDevTools --clone, cd WebDevTools, npm install.
+Issues I hit: npm install rewrote package-lock.json, so I ran git restore package-lock.json to keep it out of my diff. On Node 22, two existing JSON Generator test suites won’t run because the faker package is an ES module. They fail on unmodified main too and have nothing to do with the Cupcake Ipsum page. I also ran my first checks from the wrong folder, then re-ran them inside the clone.
 
 **Steps to Reproduce**
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. `ls __tests__/customizer/`
+2. `grep -rl "CupcakeIpsum" __tests__ src --include="*.test.*" || echo "no matches"` (the repo keeps tests in both __tests__/ and next to the code in src/)
+3. `npm test -- __tests__/customizer/CupcakeIpsumGenerator`
+4. `npm run test:coverage -- --collectCoverageFrom=src/app/customizer/CupcakeIpsumGenerator/page.jsx` (runs the whole suite)
+
+Result: no test file mentions CupcakeIpsum, Jest finds no tests for the page, and page.jsx is at 0% coverage.
 
 **Reproduction Evidence**
 
-- **Commit showing reproduction:** [link to commit in your fork]
-- **Screenshots/logs:** [if applicable]
-- **My findings:** [what you discovered during reproduction; an
-  honest, evidenced cannot-reproduce that led you to re-pick or ask
-  the maintainer belongs here and costs you nothing]
+- **Commit showing reproduction:** none
+- **Screenshots/logs:**
+Step 1:
+
+    Readme-generator
+
+Step 2:
+
+    no matches
+
+Step 3:
+
+    No tests found, exiting with code 1
+    Pattern: __tests__/customizer/CupcakeIpsumGenerator - 0 matches
+
+Step 4:
+
+    File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+    All files |       0 |        0 |       0 |       0 |
+     page.jsx |       0 |        0 |       0 |       0 | 3-74
+    Tests:       5 passed, 5 total
+
+The 2 failed suites are src/app/customizer/JsonGenerator/tests/JsonGenerator.test.js and CardForm.test.js. Both fail to run on unmodified main with:
+
+    Must use import to load ES Module: /Users/fikerkifle/WebDevTools/node_modules/@faker-js/faker/dist/index.js
+    
+- **My findings:** the issue holds on today's main. The Cupcake Ipsum page (src/app/customizer/CupcakeIpsumGenerator/page.jsx) has no tests anywhere in the repo. I also found that the repo keeps tests in two places, __tests__/ and colocated in src/, and that two unrelated suites already fail on Node 22.
+
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: repro-check. I graded my claim draft alone, then my claim and repro report together.
+- What it produced: accept on the claim; two rejects on the repro report, then accept with all six checks passing.
+- Difficulties: the first reject was missing output excerpts (a copy error on my end). The second caught a real overclaim: I said no test references the page, but I had only searched __tests__/, and the repo also keeps tests in src/. Its rubric also says "a date" where it means "a delivery date."
+- What changed: I pasted the real output, widened my search to src/, and ran coverage on the whole suite, which surfaced two pre-existing test failures on Node 22 that I now report. I also corrected my CLAUDE.local.md.
 
 ---
 
