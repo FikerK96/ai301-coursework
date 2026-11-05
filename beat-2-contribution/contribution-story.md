@@ -58,11 +58,13 @@ one in the week it belongs to.
 
 I built issue-scout: a fit profile, seven gh search issues queries, and ranking filters that pass the top 5 results to my rubric for grading. In the first scan, the ranking filters barely narrowed anything, so a bot-filed issue got through. The rubric also passed an issue with an open decision in its body, and it passed repos that had no maintainer response to judge. Now every query excludes bot authors, the scope check fails any issue with an unanswered open decision, and “nothing to judge” counts as a fail.
 
-**Unit 6: [one line on the tool work]**
+**Unit 6: Added the voice guard and a repo memory file for WebDevTools
 
-[2-4 sentences: the voice-guard, the repo-memory file. What broke or
-fell short, and what changed because of it. "Nothing broke" counts when
-it is true - say how you know.]
+I installed the voice guard, which checks every comment I post through Claude Code against my voice guide, and added upstream rules for claims, questions, and pings. Setup showed my guide had drifted into three copies, so I folded the newest one back into a single file. The guard stopped the wiring test as expected and passed my real claim on #388, which its log confirms.
+
+I also wrote a CLAUDE.local.md for WebDevTools from one scoped orientation run. That run found all of the Cupcake Ipsum logic lives in a single page.jsx, so my test plan targets one file.
+
+My claim also passed repro-check, though its rubric says “a date” where it means “a delivery date,” and I’d reword that.
 
 **Unit 7: [one line on the tool work]**
 
