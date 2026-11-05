@@ -200,6 +200,7 @@ Add one test file, `__tests__/customizer/CupcakeIpsumGenerator/page.test.jsx`, f
 Resolved: NavBar's theme toggle has `aria-label="Toggle dark mode"` in `src/components/navbar.jsx`, the same name the Readme test uses. - The full `npm test` passes only on Node 24.9+. On Node 22, the JsonGenerator and CardForm suites fail to run (already true on main). 
 I used Node 26.13.0, matching CI's latest Node. 
 
+Deviation (2026-11-05): I added a sixth test, "a saved dark theme is applied on load," inside the planned theme block, because the toggle test alone didn't exercise the code that reads the saved theme.
 
 **Toolkit**
 
@@ -212,24 +213,26 @@ I used Node 26.13.0, matching CI's latest Node.
 
 ## Testing Strategy
 
-[What observable checks prove the fix: your reproduction steps re-run
-against the built change (before and after), and the repo's own test
-suite or checks with the outcome shown. "Tests pass" with nothing
-observable named is not a strategy.]
+I re-ran my reproduction on main and on my branch, both on Node 26.13.0. On main (ce28cbe), no test file referenced CupcakeIpsum, npm test -- __tests__/customizer/CupcakeIpsumGenerator found no tests, and page.jsx had 0% coverage. On my branch (25e9a72), that search finds the new test file and all 6 tests pass. page.jsx coverage is now 96.15% of statements and 100% of branches and functions; the only uncovered line is 18, the catch that logs when a saved theme can’t be read. The repo checks from my manifest also pass on the branch: npm run format:check, npm test (10 suites, 42 tests), and npm run test:coverage. The pre-commit hook ran the format check and the full suite before it let me commit.
+
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: My ship manifest. It lists the three checks from the repo’s CI and pre-commit hook, plus the coverage run from my reproduction.
+- What it produced: Before-and-after evidence in test_evidence.md, and passing runs of all three manifest checks on my branch.
+- Difficulties: My first format check flagged the evidence file because I was still writing it. Separately, the full test suite only passes on Node 24.9 or later.
+- What changed: I formatted the evidence file, re-ran the format check, and recorded both runs. I also switched to Node 26 to match CI.
 
 ---
 
 ## Implementation Notes
 
-[A running log, added to as you work. Date each entry. What you
-built, decisions you made when you made them, wrong turns included.]
+2026-11-05: Switched from Node 22 to Node 26.13.0. The repo’s pre-commit hook runs the full test suite, and on Node 22 two existing JSON Generator suites fail to load the faker package, which would have blocked every commit. CI uses the latest Node, so this also matches CI.
+
+2026-11-05: Created the branch feature/cupcake-ipsum-tests and added __tests__/customizer/CupcakeIpsumGenerator/page.test.jsx, with 6 tests in 4 blocks (rendering, generating, copying, theme). An AI assistant drafted the file from page.jsx and the Readme generator test; I ran it and checked each test against the page’s behavior. The copy test captures the generated text before clicking Copy, because Copy replaces it with a confirmation.
+
+2026-11-05: One of the six, “a saved dark theme is applied on load,” wasn’t in my plan, so I recorded it as a deviation. I noticed the page’s class string is missing a space (“text-gray-400min-w-80”) and left it alone as out of scope. The pre-commit hook passed (10 suites, 42 tests), and I committed as 25e9a72.
+
 
 **[Date]**
 
@@ -241,10 +244,10 @@ built, decisions you made when you made them, wrong turns included.]
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: My CLAUDE.local.md memory file, and Claude, which drafted the test file. I ran the tests and verified them myself.
+- What it produced: A 115-line test file with 6 passing tests, committed as 25e9a72.
+- Difficulties: The repo’s pre-commit hook was blocked on Node 22. Before that, Prettier had mangled the __tests__ paths in my local notes.
+- What changed: I upgraded Node and now keep paths in backticks. I didn’t fix the page’s class-string bug because it was out of scope.
 
 ---
 
