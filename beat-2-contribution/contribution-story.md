@@ -55,10 +55,9 @@ happened; these entries are the toolkit's own timeline.
 All four entries are graded. Keep every heading below, and fill each
 one in the week it belongs to.
 
-**Unit 5: [one line on the tool work]**
+**Unit 5: Built issue-scout and tested it on a real scan**
 
-[2-4 sentences: what you built (the scout, your strategy), what broke
-or fell short, what changed because of it.]
+I built issue-scout: a fit profile, seven gh search issues queries, and ranking filters that pass the top 5 results to my rubric for grading. In the first scan, the ranking filters barely narrowed anything, so a bot-filed issue got through. The rubric also passed an issue with an open decision in its body, and it passed repos that had no maintainer response to judge. Now every query excludes bot authors, the scope check fails any issue with an unanswered open decision, and “nothing to judge” counts as a fail.
 
 **Unit 6: [one line on the tool work]**
 
