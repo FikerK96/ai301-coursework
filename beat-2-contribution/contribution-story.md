@@ -87,11 +87,10 @@ Claim comment: https://github.com/Bashamega/WebDevTools/issues/388#issuecomment-
 
 **Toolkit**
 
-- Tool: issue-scout (your scout: your search strategy, your rubric),
-  and how you used it
-- What it produced: [the scan and its verdict on this issue, described]
-- Difficulties: [where it fell short, or "none met" if none did]
-- What changed: [what you patched or would update, or "nothing"]
+- Tool: issue-scout. I ran one scan, then graded my two Issue Selection picks before and after this week’s scope patch
+- What it produced: An accept for #388, which passed every required check and was rated straightforward, and a reject for #386 on “No live claim.”
+- Difficulties: My ranking filters barely narrowed the scan, the response check passed on evidence that was mostly from 2024, and my strict “Bounded scope” check would have rejected most real issues
+- What changed: I excluded bot authors in every query and replaced “Bounded scope” with the scope-feasible row plus a difficulty note
 
 ---
 
@@ -99,26 +98,26 @@ Claim comment: https://github.com/Bashamega/WebDevTools/issues/388#issuecomment-
 
 **Problem Description**
 
-[In your own words, what is broken or missing?]
+The Cupcake Ipsum Generator page has no Jest tests. Nothing checks that the page renders, that it generates the right number of paragraphs, or that it copies the text, so a change that broke it would still pass CI.
 
 **Expected Behavior**
 
-[What should happen?]
+The page has a test file covering rendering and the user interactions (the count input, Generate, and Copy). The tests pass locally and in CI.
 
 **Current Behavior**
 
-[What actually happens?]
+No test in __tests__/ or src/ references the page. `npm test -- __tests__/customizer/CupcakeIpsumGenerator` finds no tests, and page.jsx has 0% coverage across the whole suite.
 
 **Affected Components**
 
-[Which parts of the codebase are involved?]
+src/app/customizer/CupcakeIpsumGenerator/page.jsx (the page under test; I won't change it) and a new test file at __tests__/customizer/CupcakeIpsumGenerator/page.test.jsx.
 
 **Toolkit**
 
-- Tool: issue-scout. I ran one scan, then graded my two Issue Selection picks before and after this week’s scope patch
-- What it produced: An accept for #388, which passed every required check and was rated straightforward, and a reject for #386 on “No live claim.”
-- Difficulties: My ranking filters barely narrowed the scan, the response check passed on evidence that was mostly from 2024, and my strict “Bounded scope” check would have rejected most real issues
-- What changed: I excluded bot authors in every query and replaced “Bounded scope” with the scope-feasible row plus a difficulty note
+- Tool: A CLAUDE.local.md repo memory file, built from one scoped orientation run over the Cupcake Ipsum folder and the existing customizer tests.
+- What it produced: A map of the project. All of the page’s logic lives in page.jsx (state, generate(), copy(), theme), it says where the new test file goes, and it points to the Readme generator test as the pattern to copy.
+- Difficulties: The first version said tests only live in __tests__/, which was wrong; repro-check caught it. Prettier’s format check also flagged my local files.
+- What changed: I corrected the memory file and added rules for restoring package-lock.json and for formatting only my local files
 
 ---
 
@@ -182,19 +181,24 @@ The 2 failed suites are src/app/customizer/JsonGenerator/tests/JsonGenerator.tes
 
 **Analysis**
 
-[Your analysis of the root cause: what is causing the issue, traced
-to the files and functions involved.]
+The repo added Jest tests tool by tool through separate issues, and the Cupcake Ipsum page never got one. All of its logic lives in src/app/customizer/CupcakeIpsumGenerator/page.jsx. The page keeps three pieces of state: the paragraph count (cupcakes, a string that starts at 1), the output (cup), and isDarkMode. The generate() function appends one fixed paragraph per cupcake and sets the output. The copy() function writes the output to navigator.clipboard and replaces it with “Text copied successfully”. The theme is read from and saved to localStorage and passed to NavBar.
 
 **Proposed Solution**
 
-[High-level description of your fix approach, and what you are
-deliberately NOT changing.]
+I’m adding one test file, tests/customizer/CupcakeIpsumGenerator/page.test.jsx, which follows the Readme generator test’s pattern: React Testing Library, localStorage cleared before each test, and a describe block for each area. The rendering tests check that the count input defaults to 1 and that the Generate and Copy buttons render. The generating tests check that the default gives one paragraph and a count of 3 gives three. The copying test checks that writeText receives the generated text and that the page shows “Text copied successfully”. The theme test checks that the toggle saves to localStorage.
+
+I am deliberately not changing page.jsx, including its default export name (ButtonCustomizer) and its unclamped min/max. I’m also leaving every other test, package.json, package-lock.json, and contributing.md untouched. The contributing.md file already documents how to run the tests, so the issue’s docs task needs no edit, and I’ll say so in the PR.
+
+
 
 **Implementation Plan**
 
-1. [Modify file X to do Y]
-2. [Add or change Z]
-3. [Update tests]
+1. Create a branch named feature/cupcake-ipsum-tests, per contributing.md.
+2. Add __tests__/customizer/CupcakeIpsumGenerator/page.test.jsx with describe blocks for rendering, generating, copying, and the theme.
+3. Mock navigator.clipboard.writeText and clear localStorage in beforeEach, the way the Readme test mocks browser APIs.
+4. Run `npm test -- __tests__/customizer/CupcakeIpsumGenerator`, then the manifest checks (format:check, npm test, test:coverage), and confirm page.jsx coverage rises from 0%.
+5. Format only the new test file with `npx prettier --write` on that path.
+
 
 [Record deviations here as they happen: what changed mid-build and
 why. A recorded deviation is honest work; silent drift is not.]
