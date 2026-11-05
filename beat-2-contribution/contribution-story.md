@@ -1,4 +1,4 @@
-# Contribution: [Issue Title]
+# Contribution: Implement Jest Tests for Cupcake Ipsum Generator
 
 Path: `beat-2-contribution/contribution-story.md`
 
@@ -7,11 +7,10 @@ the repository is not read. **Keep every section header below under its exact na
 format criteria grade exactly that. Your course repo link is the whole submission: no tool
 files and no evidence uploads are part of Assignment 5.
 
-**Contribution Number:** [1]
-**Student:** [Student name]
-**GitHub Username:** [your GitHub username, exactly as it appears on your profile - no @, no
-profile URL. Your comments upstream are identified by this name.]
-**Issue:** [GitHub issue link]
+**Contribution Number:** 1
+**Student:** Fiker Kifle
+**GitHub Username:** FikerK96
+**Issue:** https://github.com/Bashamega/WebDevTools/issues/388
 **Pull Request:** [GitHub PR link, once opened]
 
 One repository, built across units 5 to 8, telling the whole story of your real
@@ -79,16 +78,10 @@ drafted, what you did with the draft.]
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs in your own words: how you searched, what your scan
-surfaced, what your scout's verdict said, why this issue fits your
-profile, and what you hope to learn. If your scout's verdict on it
-was reject and you chose it anyway, say so here and say why; choosing
-against your own tool silently is what loses points. Close with an
-honest read of the tool itself: where the scout fell short on a real
-wild search and what you changed or would change, or what convinced
-you it held up. **Record the link to your claim comment in this section too.**
-Not claimed yet? Write `claim pending` and today's date where the link goes,
-and add the link the moment your claim lands.]
+I ran my issue-scout with seven gh search issues queries built from my fit profile: Python, Java, TypeScript, and SQL, and worked on tests, docs, and small fixes. It graded 5 of the 582 results and accepted 4. My actual issue had to come from the AI301 Issue Selection site, though, so I filtered that list by my languages and the documentation, tests, and bug tags. I dropped my first pick, proCAT#857, after its maintainer asked outside contributors not to take those issues. Then I graded two Jest-test issues in Bashamega/WebDevTools. The scout accepted #388 (Cupcake Ipsum Generator tests) with the difficulty note “straightforward,” and rejected #386 because someone had claimed it earlier that day.
+#388 fits my profile. I want practice writing tests, the repo’s JavaScript/React stack is close to my TypeScript work, and a recently merged PR (#692) shows the test pattern to follow. I’m hoping to get comfortable with React Testing Library and with covering a component’s rendering and interactions.
+On claims, the scout did well: it caught the fresh claim on #386, which the site’s list didn’t show. Its ranking filters barely narrowed the first scan, though. The maintainer-response check also passed WebDevTools mostly on 2024 evidence, while recent outside PRs (#626 to #628) are still unreviewed, so I can’t count on a quick review. I’ve excluded bot authors from my queries and replaced the strict scope check with the scope-feasible row. Next I’d weight the response check toward recent activity.
+Claim comment: https://github.com/Bashamega/WebDevTools/issues/388#issuecomment-6667161459
 
 **Toolkit**
 
@@ -120,10 +113,10 @@ and add the link the moment your claim lands.]
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: issue-scout. I ran one scan, then graded my two Issue Selection picks before and after this week’s scope patch
+- What it produced: An accept for #388, which passed every required check and was rated straightforward, and a reject for #386 on “No live claim.”
+- Difficulties: My ranking filters barely narrowed the scan, the response check passed on evidence that was mostly from 2024, and my strict “Bounded scope” check would have rejected most real issues
+- What changed: I excluded bot authors in every query and replaced “Bounded scope” with the scope-feasible row plus a difficulty note
 
 ---
 
