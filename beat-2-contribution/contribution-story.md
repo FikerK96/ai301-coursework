@@ -185,30 +185,28 @@ The repo added Jest tests tool by tool through separate issues, and the Cupcake 
 
 **Proposed Solution**
 
-I’m adding one test file, tests/customizer/CupcakeIpsumGenerator/page.test.jsx, which follows the Readme generator test’s pattern: React Testing Library, localStorage cleared before each test, and a describe block for each area. The rendering tests check that the count input defaults to 1 and that the Generate and Copy buttons render. The generating tests check that the default gives one paragraph and a count of 3 gives three. The copying test checks that writeText receives the generated text and that the page shows “Text copied successfully”. The theme test checks that the toggle saves to localStorage.
 
-I am deliberately not changing page.jsx, including its default export name (ButtonCustomizer) and its unclamped min/max. I’m also leaving every other test, package.json, package-lock.json, and contributing.md untouched. The contributing.md file already documents how to run the tests, so the issue’s docs task needs no edit, and I’ll say so in the PR.
-
+Add one test file, `__tests__/customizer/CupcakeIpsumGenerator/page.test.jsx`, following the pattern in `__tests__/customizer/Readme-generator/page.test.jsx` (React Testing Library, localStorage cleared before each test, describe blocks per area). It covers rendering (the count input defaulting to 1, the Generate and Copy buttons), generating (the default gives one paragraph, a count of 3 gives three), copying (capture the generated text before clicking Copy, then assert navigator.clipboard.writeText received it and the page shows "Text copied successfully"), and the theme toggle (found by its "Toggle dark mode" label) saving to localStorage. 
 
 
 **Implementation Plan**
 
-1. Create a branch named feature/cupcake-ipsum-tests, per contributing.md.
-2. Add __tests__/customizer/CupcakeIpsumGenerator/page.test.jsx with describe blocks for rendering, generating, copying, and the theme.
-3. Mock navigator.clipboard.writeText and clear localStorage in beforeEach, the way the Readme test mocks browser APIs.
-4. Run `npm test -- __tests__/customizer/CupcakeIpsumGenerator`, then the manifest checks (format:check, npm test, test:coverage), and confirm page.jsx coverage rises from 0%.
-5. Format only the new test file with `npx prettier --write` on that path.
+1. Create a branch named `feature/cupcake-ipsum-tests`, per contributing.md. 
+2. Add `__tests__/customizer/CupcakeIpsumGenerator/page.test.jsx` with describe blocks for rendering, generating, copying, and the theme. 
+3. Mock navigator.clipboard.writeText and clear localStorage in beforeEach, the way the Readme test mocks browser APIs. 
+4. Run `npm test -- __tests__/customizer/CupcakeIpsumGenerator`, then the manifest checks (`npm run format:check`, `npm test`, `npm run test:coverage`). Confirm page.jsx coverage rises from 0% and that generate(), copy(), and the theme toggle are covered. 
+5. Format only the new test file with `npx prettier --write` on that path. 
 
+Resolved: NavBar's theme toggle has `aria-label="Toggle dark mode"` in `src/components/navbar.jsx`, the same name the Readme test uses. - The full `npm test` passes only on Node 24.9+. On Node 22, the JsonGenerator and CardForm suites fail to run (already true on main). 
+I used Node 26.13.0, matching CI's latest Node. 
 
-[Record deviations here as they happen: what changed mid-build and
-why. A recorded deviation is honest work; silent drift is not.]
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: plan-check, which grades my plan.md and plan comment together.
+- What it produced: An accept verdict, with all 7 required checks passing. It also answered my one open question by finding NavBar’s “Toggle dark mode” label.
+- Difficulties: It caught three problems in my files. Prettier had turned every __tests__ path into bold “tests” locally, my coverage target (“above 0%”) proved too little, and my copy test had to capture the text before clicking Copy. It also named gaps in its own procedure, such as having no step for repro evidence that exists only in a draft.
+- What changed: I backticked every path, added a Risks section, named generate(), copy(), and the theme toggle as what the tests must cover, and fixed the step order in the copy test.
 
 ---
 
