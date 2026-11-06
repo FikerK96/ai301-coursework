@@ -70,10 +70,13 @@ My claim also passed repro-check, though its rubric says “a date” where it m
 
 My ship manifest runs the three checks the repo’s CI and pre-commit hook use: format:check, npm test, and test:coverage. I left out npm install because it rewrites package-lock.json. Two existing test suites failed on Node 22, and those failures would also have blocked every commit through the pre-commit hook, so I switched to Node 26 to match CI. On my real branch the ship-gate passed all three checks and my pr-precheck, but my voice guard stopped the PR over a claim that had no printed output behind it. After trimming that line and re-running the gate, I opened PR #694.
 
-**Unit 8: [one line on the tool work]**
+**Unit 8: Wrote my PR playbook and acted on the monitor's first draft**
 
-[2-4 sentences: the PR-monitor and your playbook. What it read, what it
-drafted, what you did with the draft.]
+I installed the PR monitor and wrote a playbook based on how my repo actually moves. Five recent outside PRs waited 0.0 to 5.6 days for a first maintainer response, so I set the nudge threshold at 9 quiet days.
+
+The monitor marked my PR FEEDBACK-IN because of a CodeRabbit nitpick, and the reply it drafted would only have been true after the change. I added the three tests (page.jsx went to 100% coverage), rewrote the draft around my actual commit and output, and posted it through my voice guard.
+
+The monitor couldn’t tell which check was failing either. I looked myself: it was Vercel’s fork authorization, not my code. And since it counts any comment as activity, I added a playbook rule that bot comments don’t reset my staleness count.
 
 ---
 
@@ -201,6 +204,8 @@ I used Node 26.13.0, matching CI's latest Node.
 
 Deviation (2026-11-05): I added a sixth test, "a saved dark theme is applied on load," inside the planned theme block, because the toggle test alone didn't exercise the code that reads the saved theme.
 
+Deviation (2026-11-05): after CodeRabbit's review on PR #694, I added three light-theme tests (a second toggle click, a saved "false" theme, and a malformed saved value), which also cover line 18.
+
 **Toolkit**
 
 - Tool: plan-check, which grades my plan.md and plan comment together.
@@ -232,6 +237,8 @@ I re-ran my reproduction on main and on my branch, both on Node 26.13.0. On main
 
 2026-11-05: One of the six, “a saved dark theme is applied on load,” wasn’t in my plan, so I recorded it as a deviation. I noticed the page’s class string is missing a space (“text-gray-400min-w-80”) and left it alone as out of scope. The pre-commit hook passed (10 suites, 42 tests), and I committed as 25e9a72.
 
+2026-11-05: Opened PR #694. CodeRabbit asked for light-theme tests. I checked page.jsx first: a malformed saved theme makes JSON.parse throw, and the catch uses console.log, so the test silences and checks console.log. I added three tests, the pre-commit hook passed (10 suites, 45 tests), and page.jsx reached 100% coverage. I committed as 7729b42, pushed, and replied on the PR.
+
 
 **[Date]**
 
@@ -259,9 +266,8 @@ The description shows before-and-after output (no tests and 0% coverage before, 
 
 **Maintainer Feedback:**
 
-- [Date]: [feedback received, or "none yet"; silence is a normal
-  state and costs you nothing]
-- [Date]: [how you addressed it]
+- 2026-11-05: CodeRabbit, the repo’s automated reviewer, left one nitpick asking for light-theme tests: a second toggle click, a saved “false” theme, and a malformed saved value. No maintainer has reviewed it yet; Bashamega is the requested reviewer. The Vercel preview check failed because deploys from forks need the owner’s authorization, so that failure has nothing to do with my code.
+- 2026-11-05: I added the three tests in 7729b42 and pushed. The file now has 9 tests, page.jsx is at 100% coverage, and the full suite runs 10 suites and 45 tests. I replied through my voice guard (https://github.com/Bashamega/WebDevTools/pull/694#issuecomment-6675335890) and re-requested CodeRabbit’s review.
 
 **Status:** Awaiting review
 
@@ -278,25 +284,25 @@ The description shows before-and-after output (no tests and 0% coverage before, 
 
 **Technical Skills Gained**
 
-[What you learned technically, named concretely.]
+Writing React Testing Library tests that find elements by role and label, and reading a raw text node with getNodeText. Mocking browser APIs jsdom lacks (navigator.clipboard) and spying on console.log. Measuring one file's coverage with Jest's --collectCoverageFrom. Working from a fork: an upstream remote, .git/info/exclude for local files, and gh's --repo and --head flags to open a PR on the original repo. Why an ES-module package (faker) fails under Jest on Node 22 but loads on Node 24.9+.
 
 **Challenges Overcome**
 
-[What was hard and how you solved it; point at the real events, the
-Toolkit blocks above are full of them.]
+The repo's pre-commit hook runs the full test suite, which failed on my Node 22, so I moved to Node 26 to match CI. repro-check caught me overclaiming that no test referenced the page when I had only searched __tests__/. Prettier turned my __tests__ paths into bold text in my local notes until I backticked them. My voice guard stopped my first PR attempt over a claim with no printed output, and my first issue pick turned out to be reserved for the maintainer's own team.
 
 **What I'd Do Differently Next Time**
 
-[Reflection on your process.]
+Check the repo's CI Node version and pre-commit hooks before reproducing anything, search every place a repo keeps tests from the start, and put file paths in backticks from the first draft. I'd also start earlier than the last few days, so a maintainer has time to review before I submit.
 
 ---
 
 ## Resources Used
 
-[What actually helped, not a reading list. List things this story
-already shows you using: the doc you followed to set the environment
-up, the thread that explained the bug, the person who answered you.
-One real entry beats ten plausible ones.]
+- contributing.md, Run the Tests section: https://github.com/Bashamega/WebDevTools/blob/main/contributing.md
+- PR #692, the Readme generator tests I copied the pattern from: https://github.com/Bashamega/WebDevTools/pull/692
+- Jest's ECMAScript Modules docs, linked from the faker error: https://jestjs.io/docs/ecmascript-modules
+- CodeRabbit's review on my PR: https://github.com/Bashamega/WebDevTools/pull/694
+- Claude, an AI assistant, which helped me plan, draft the tests and the story, and work through each unit's steps
 
 - [Link to documentation that helped]
 - [Discussion, issue, or post that helped]
