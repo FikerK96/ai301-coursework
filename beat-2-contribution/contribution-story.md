@@ -66,10 +66,9 @@ I also wrote a CLAUDE.local.md for WebDevTools from one scoped orientation run. 
 
 My claim also passed repro-check, though its rubric says “a date” where it means “a delivery date,” and I’d reword that.
 
-**Unit 7: [one line on the tool work]**
+**Unit 7: Wrote my ship manifest and shipped PR #694 through the ship-gate**
 
-[2-4 sentences: the ship-gate and your gate manifest. What it produced
-on your real branch, what fought you, what changed because of it.]
+My ship manifest runs the three checks the repo’s CI and pre-commit hook use: format:check, npm test, and test:coverage. I left out npm install because it rewrites package-lock.json. Two existing test suites failed on Node 22, and those failures would also have blocked every commit through the pre-commit hook, so I switched to Node 26 to match CI. On my real branch the ship-gate passed all three checks and my pr-precheck, but my voice guard stopped the PR over a claim that had no printed output behind it. After trimming that line and re-running the gate, I opened PR #694.
 
 **Unit 8: [one line on the tool work]**
 
@@ -253,10 +252,10 @@ I re-ran my reproduction on main and on my branch, both on Node 26.13.0. On main
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when opened]
+**PR Link:** https://github.com/Bashamega/WebDevTools/pull/694
 
-**PR Description:** [what the PR says; much of the content above
-adapts into it]
+**PR Description:** Adds tests/customizer/CupcakeIpsumGenerator/page.test.jsx, with 6 tests covering rendering, generating, copying, and the theme, following the pattern of the Readme generator’s test. page.jsx is unchanged. There’s no docs change because contributing.md already documents running the tests (#692).
+The description shows before-and-after output (no tests and 0% coverage before, 6 passing tests and 96.15% coverage after) and the repo’s checks passing: format:check, npm test with 10 suites and 42 tests, and test:coverage. It says “Fixes #388”. In Notes for Reviewers, I disclose my AI use and flag a class-string bug in the page that’s out of scope here.
 
 **Maintainer Feedback:**
 
@@ -264,16 +263,14 @@ adapts into it]
   state and costs you nothing]
 - [Date]: [how you addressed it]
 
-**Status:** [Awaiting review / Iterating / Merged / Closed. The
-status is a fact you record, never a grade: the PR is graded as
-opened.]
+**Status:** Awaiting review
 
 **Toolkit**
 
-- Tool:
-- What it produced:
-- Difficulties:
-- What changed:
+- Tool: The ship-gate. It runs the three repo checks in my manifest, then my pr-precheck, and only then lets gh pr create run. My voice guard checks the PR description.
+- What it produced: A PASS on my branch. The format check, tests, and coverage all passed, and pr-precheck passed every check.
+- Difficulties: My voice guard blocked my first PR attempt. One line in Notes for Reviewers claimed Node 22 test failures with no printed output behind it, which breaks a rule I set myself. pr-precheck had already flagged that line, but only as a non-blocking note. Opening the PR on the original repo from my fork also meant passing --repo, --base, and --head to gh.
+- What changed: I cut the line down to what my output shows, re-ran the ship-gate, got a second PASS, and opened PR #694.
 
 ---
 
